@@ -118,7 +118,7 @@ static void onEnterNode(MenuNode* n)
     // Acciones inmediatas (sin pedir datos) y automaticas en elupdate
     switch (n->id) {
 
-        case 21: print();       
+        //case 21: print();       
         /*
         casexx:  // Acci贸n inmediata para el nodo con id xx
             break;
@@ -162,7 +162,7 @@ static bool nodeRequiresInput(int id)
     switch (id) {
 
         //case XX:  // Cambiar SSID
-        return true;
+        //return true;
       
         default:
             return false;

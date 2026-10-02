@@ -17,15 +17,19 @@
 extern "C" {
 #endif
 
+// Puerto UART para consola (logs, info, debug)
+#define UART_DEBUG UART_NUM_0
+
 esp_err_t initUart();
-void sendUartDataln(const uint8_t* data, size_t len) ;
-void sendUartData(const uint8_t* data, size_t len)  ;
+void sendUartDataln(const uint8_t* data, size_t len);
+void sendUartData(const uint8_t* data, size_t len);
 void writeSerialComln(const char* data);
 void writeSerialCom(const char* data);
 void clearScreen();
 char readUserChar(void);
 void updateUartBuffers();
 
+void print(const char* str);
 void printFormat(const char* format, ...);
 
 #ifdef __cplusplus
