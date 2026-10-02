@@ -1,13 +1,4 @@
 #include "menuTree.h"
-#include <stdlib.h>
-#include <string.h>
-#include  <stdbool.h>
-
-
-bool hasChildWithKey(MenuNode *node, char key);
-static void printMenuRecursive(MenuNode *node, int level);
-
-
 
 MenuNode* create_node(const char* title, char key, int id) {
     MenuNode *node = (MenuNode*)malloc(sizeof(MenuNode));
@@ -61,11 +52,9 @@ void add_child(MenuNode *parent, MenuNode *child) {
     }
 }
 
-MenuNode* menuInit() {
-
+MenuNode* menuInit() 
+{
     MenuNode* root = create_node("MENU PRINCIPAL", '0', 0);
-
-    
 
     MenuNode* node_1 = create_node("MENU DEBUG", '1', 1);
     add_child(root, node_1);
@@ -75,17 +64,12 @@ MenuNode* menuInit() {
         MenuNode* node_12 = create_node("dataStruct", '2', 13);
         add_child(node_1,node_12);
 
-
     return root;
-
-    
-
-
 }
 
 
-
-void menuUpdate(char caracter, MenuNode **current) {
+void menuUpdate(char caracter, MenuNode **current) 
+{
     if (current == NULL || *current == NULL) {  
         return;  // Verifica que 'current' y '*current' no sean nulos
     }
@@ -102,10 +86,10 @@ void menuUpdate(char caracter, MenuNode **current) {
         }
     }
 }
-void printNode(MenuNode *node) {
-    if (node == NULL) {
-        return;
-    }
+
+void printNode(MenuNode *node) 
+{
+    if (node == NULL) return;
 
     // Imprime el título del nodo padre
     writeSerialComln(node->title);
@@ -124,8 +108,6 @@ void printNode(MenuNode *node) {
         }
     }
 }
-
-
 
 static void printMenuRecursive(MenuNode *node, int level)
 {
@@ -149,16 +131,12 @@ static void printMenuRecursive(MenuNode *node, int level)
 
 void printFullMenu(MenuNode *root)
 {
-    if (root == NULL) {
-        return;
-    }
-
+    if (root == NULL) return;
     printMenuRecursive(root, 0);
 }
 
-
-
-bool hasChildWithKey(MenuNode *node, char key) {
+bool hasChildWithKey(MenuNode *node, char key) 
+{
     if (node == NULL) {
         return false;
     }
@@ -173,7 +151,8 @@ bool hasChildWithKey(MenuNode *node, char key) {
     return false;
 }
 
-void freeMenu(MenuNode *node) {
+void freeMenu(MenuNode *node) 
+{
     if (node == NULL) {
         return;  // Si el nodo es nulo, no hace nada
     }
@@ -189,9 +168,8 @@ void freeMenu(MenuNode *node) {
     free(node);
 }
 
-char* get_title(MenuNode* menu){
-    if(menu == NULL){
-        return NULL;
-    }
-    return menu->title;
+char* get_title(MenuNode* menu)
+{
+    if(menu == NULL) return NULL;
+    else return menu->title;
 }

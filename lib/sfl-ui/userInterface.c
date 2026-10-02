@@ -1,53 +1,28 @@
-
-
-#include <ctype.h>
-#include <string.h>
 #include "userInterface.h"
-#include "menuTree.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 
-
-#define MAX_DATA_BUFFER 30
-
-
-
+/*--------------------------------------------------
+* VARIABLES GLOBALES
+*--------------------------------------------------*/
 static MenuNode *menu = NULL;
-char data_buffer[MAX_DATA_BUFFER] ; //Variable para almacenar los datos recibidos
-unsigned char buffer_index = 0; //脥ndice para el buffer de datos
-bool aceptandoDatos=false;
-bool updateScreen=false;
+char data_buffer[MAX_DATA_BUFFER]; // Variable para almacenar los datos recibidos
+unsigned char buffer_index = 0; // Indice para el buffer de datos
+bool aceptandoDatos = false;
+bool updateScreen = false;
 static int lastMenuId = -1;
 
-void printDataValues(void);
-void printDataNames(void);
-void moveCursor(int row, int col);
-
-
-void procesarDatos(const char* data, unsigned char length) ;
-static void onEnterNode(MenuNode* n);
-static void onUpdateNode(MenuNode* n);
-static bool nodeRequiresInput(int id);
-
-
-
-
-bool userInterfaceInit(){
-
+bool userInterfaceInit(void)
+{
     initUart();
-    clearScreen();//Borra mensajes del ESP32 al iniciar el programa
-    menu=menuInit();
-    if(menu){
-        ESP_LOGI("userInterface", "Menu inicializado");
-    }else{
-        ESP_LOGI("userInterface", "Menu no inicializado");
-    }
+    clearScreen(); //Borra mensajes del ESP32 al iniciar el programa
+    menu = menuInit();
+    if (menu) ESP_LOGI("userInterface", "Menu inicializado");    
+    else ESP_LOGI("userInterface", "Menu no inicializado");
 
-
+    return menu != NULL;
 }
 
-
-void userInterfaceUpdate() {
+void userInterfaceUpdate(void) 
+{
     if (menu == NULL) return;
 
     char charReceived = readUserChar();
@@ -63,11 +38,8 @@ void userInterfaceUpdate() {
         //Si no es nuevo pero aun asi requiere datos(porque ya se enviaron datos previamente
         //y se quiere seguir enviando datos) tambien preparo el buffer
         aceptandoDatos = nodeRequiresInput(menu->id);
-
-        
-        return ;
+        return;
     }
-  
 
     if (charReceived == '\n') {
         if (aceptandoDatos) {
@@ -83,7 +55,6 @@ void userInterfaceUpdate() {
 
    if (!aceptandoDatos) {
 
-        
         menuUpdate(charReceived, &menu);
 
         if (lastMenuId != menu->id) {
@@ -106,29 +77,17 @@ void userInterfaceUpdate() {
             } 
         }
     }
-
-
-
-
-    // 馃敼 Ejecutar siempre la l贸gica de actualizaci贸n peri贸dica
+    // Ejecutar siempre la logica de actualizacion periodica
     onUpdateNode(menu);
 
     return;
 }
 
-
-
-
-
-
-
-
-void procesarDatos(const char* data, unsigned char length) {
+void procesarDatos(const char* data, unsigned char length) 
+{
     if (data == NULL || menu == NULL || length <= 0) { 
         return;
     }
-
-
 /*
     if(menu->id == xx){
     
@@ -137,24 +96,16 @@ void procesarDatos(const char* data, unsigned char length) {
     }
 }
 */
-
     if(menu->id == 21){
     
 
         //Accion a ejecutar al recibir datos en el nodo con id xx
         return;
     }
-
-
-
-
-
-
-
 }
 
-
-static void onEnterNode(MenuNode* n) {
+static void onEnterNode(MenuNode* n) 
+{
     if (!n) return;
 
     if (nodeRequiresInput(n->id)) {
@@ -162,20 +113,16 @@ static void onEnterNode(MenuNode* n) {
         memset(data_buffer, 0, sizeof(data_buffer));
         buffer_index = 0;
         //sendUartDataln("Nodo requiere entrada. Presiona 'ENTER' para comenzar.");
-
     } 
 
     // Acciones inmediatas (sin pedir datos) y automaticas en elupdate
     switch (n->id) {
 
-        case 21: print();
-                   
+        case 21: print();       
         /*
         casexx:  // Acci贸n inmediata para el nodo con id xx
             break;
         */
-
-
         default:
             break;
     }
@@ -194,7 +141,8 @@ static void onEnterNode(MenuNode* n) {
 }
 
 //Ejecuto acciones peri贸dicas al estar en ciertos nodos
-static void onUpdateNode(MenuNode* n) {
+static void onUpdateNode(MenuNode* n)
+{
     if (!n) return;
 
     switch (n->id) {
@@ -203,15 +151,14 @@ static void onUpdateNode(MenuNode* n) {
             // Acci贸n peri贸dica para el nodo con id xx
             break;
         */
-
-
         default:
             // Otros men煤s no se refrescan constantemente
             break;
     }
 }
 
-static bool nodeRequiresInput(int id) {
+static bool nodeRequiresInput(int id) 
+{
     switch (id) {
 
         //case XX:  // Cambiar SSID
@@ -222,13 +169,9 @@ static bool nodeRequiresInput(int id) {
     }
 }
 
-
-
-void moveCursor(int row, int col) {
+void moveCursor(int row, int col) 
+{
     char buffer[10];
     snprintf(buffer, sizeof(buffer), "\033[%d;%dH", row, col);
     writeSerialCom(buffer);
-
 }
-
-
