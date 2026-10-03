@@ -1,0 +1,22 @@
+ui_port.h es solo el contrato (prototipos); la implementación está en el archivo del port.
+
+QUE INCLUYE CADA HEADER DEL PORT
+serialCom.h ─► uiConfig.h ─► portable/ui_port_list.h   (catálogo + UI_PORT)
+            ─► portable/ui_port.h  (contrato + tipo de status)
+                    └─► portable/ui_port_select.h ─► esp32_uart.h
+uiConfig.h: incluye solo ui_port_list.h y define UI_PORT (con #ifndef, para pisarlo desde build_flags). Nunca incluye ui_port.h, para evitar ciclos.
+ui_port.h: incluye uiConfig.h, <stddef.h>, <stdint.h> y <stdbool.h>. Declara el tipo de status propio y las tres primitivas. Al final incluye ui_port_select.h.
+esp32_uart.h: solo macros y valores por defecto (puerto, baud, tamaños de buffer, UI_LOG). Conviene que no incluya driver/uart.h, para que el SDK no se filtre a todo el que incluya serialCom.h. Esos includes van en el .c.
+menuTree.h solo necesita uiConfig.h. userInterface.h incluye menuTree.h y serialCom.h.
+
+Al mover código, hay dos detalles de serialCom.c:
+writeSerialComln manda "\n\r", que es el orden inverso al estándar. Funciona en la mayoría de terminales, pero conviene "\r\n".
+print es un nombre global demasiado genérico. Hacelo static o ponele prefijo.
+
+Sobre UI_PORT_WRITE_BLOCKS: el recorte que adjuntaste es ese flag, y lo reconsideré. 
+Es más simple y más portable fijarlo en el contrato: 
+ui_port_write no retorna hasta haber encolado los len bytes. 
+El port del ESP32 ya lo cumple, y el del LPC845 tendría que esperar 
+cuando el buffer está lleno en lugar de descartar. 
+Así el core no necesita flag ni lógica de reintento.
+

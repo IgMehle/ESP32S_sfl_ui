@@ -4,11 +4,12 @@
 #ifndef MENUTREE_H
 #define MENUTREE_H
 
+// LIBRARIES
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 // INCLUDES
-#include "serialCom.h"
+#include "uiConfig.h"
 
 #define MAX_CHILDREN 10 // Número máximo de hijos por nodo (ajustable)
 #define GO_BACK 27 // ESC  // Código ASCII para la tecla ESC (para volver al padre)

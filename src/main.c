@@ -3,11 +3,9 @@
 static void update_menu_task(void *pvParameters) {
     while (1) {
         userInterfaceUpdate();
-        vTaskDelay(pdMS_TO_TICKS(10)); // Ajusta el tiempo de espera según sea necesario
+        vTaskDelay(pdMS_TO_TICKS(50)); // Ajusta el tiempo de espera según sea necesario
     }
 }
-
-
 
 void app_main(void) 
 {

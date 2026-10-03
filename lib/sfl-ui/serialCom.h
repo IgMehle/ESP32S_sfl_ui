@@ -9,31 +9,14 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
-// PORT INCLUDES
-#include "driver/uart.h"
-#include "esp_err.h"
-#include "esp_log.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-// Puerto UART para consola (logs, info, debug)
-#define UART_DEBUG UART_NUM_0
-
-esp_err_t initUart();
-void sendUartDataln(const uint8_t* data, size_t len);
-void sendUartData(const uint8_t* data, size_t len);
-void writeSerialComln(const char* data);
-void writeSerialCom(const char* data);
-void clearScreen();
-char readUserChar(void);
-void updateUartBuffers();
-
-void print(const char* str);
-void printFormat(const char* format, ...);
-
-#ifdef __cplusplus
-}
-#endif
+// CONFIGURACIONES Y PORTS
+/*
+ * serialCom.h ─► uiConfig.h ─► portable/ui_port_list.h   (catálogo + UI_PORT)
+ *       ─► portable/ui_port.h  (contrato + tipo de status)
+ *      └─► portable/ui_port_select.h ─► port.h
+*/
+#include "uiConfig.h"
+#include "portable/ui_port.h"
 
 #endif // SERIAL_COM_H

@@ -21,11 +21,11 @@
 
 #ifndef USERINTERFACE_H
 #define USERINTERFACE_H
-#include <ctype.h>
+// LIBC
 #include <string.h>
+// INCLUDES
 #include "menuTree.h"
 #include "serialCom.h"
-
 // FREERTOS
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
