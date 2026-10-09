@@ -9,11 +9,8 @@
 #include "portable/ui_portList.h"
 
 // Select the port to use for the UI library
+#ifndef UI_PORT
 #define UI_PORT UI_PORT_ESP32S
-
-// CONFIGS
-#define UI_PORT_ECHO_BY_PORT 1      // la ISR ya hace eco
-#define UI_PORT_WRITE_BLOCKS 1      // si write espera cuando el buffer está lleno
-#define UI_PORT_TX_BUFFER_SIZE 128  // si el core necesita fragmentar
+#endif
 
 #endif // UICONFIG_H

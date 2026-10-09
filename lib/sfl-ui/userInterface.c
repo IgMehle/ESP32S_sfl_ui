@@ -9,6 +9,12 @@ unsigned char buffer_index = 0; // Indice para el buffer de datos
 bool aceptandoDatos = false;
 bool updateScreen = false;
 static int lastMenuId = -1;
+/*--------------------------------------------------
+* PROTOTIPOS STATIC
+*--------------------------------------------------*/
+static void onEnterNode(MenuNode* n);
+static void onUpdateNode(MenuNode* n);
+static bool nodeRequiresInput(int id);
 
 bool userInterfaceInit(void)
 {

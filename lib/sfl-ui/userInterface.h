@@ -23,6 +23,7 @@
 #define USERINTERFACE_H
 // LIBC
 #include <string.h>
+#include <ctype.h>
 // INCLUDES
 #include "menuTree.h"
 #include "serialCom.h"
@@ -35,12 +36,7 @@
 void printDataValues(void);
 void printDataNames(void);
 void moveCursor(int row, int col);
-
 void procesarDatos(const char* data, unsigned char length) ;
-static void onEnterNode(MenuNode* n);
-static void onUpdateNode(MenuNode* n);
-static bool nodeRequiresInput(int id);
-
 bool userInterfaceInit(void);
 void userInterfaceUpdate(void);
 

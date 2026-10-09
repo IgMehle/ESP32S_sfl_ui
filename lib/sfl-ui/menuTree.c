@@ -1,5 +1,8 @@
 #include "menuTree.h"
 
+// PROTOTIPOS STATIC
+static void printMenuRecursive(MenuNode *node, int level);
+
 MenuNode* create_node(const char* title, char key, int id) {
     MenuNode *node = (MenuNode*)malloc(sizeof(MenuNode));
     if (node == NULL) {

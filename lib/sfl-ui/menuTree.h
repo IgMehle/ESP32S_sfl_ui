@@ -10,6 +10,7 @@
 #include <stdbool.h>
 // INCLUDES
 #include "uiConfig.h"
+#include "serialCom.h"
 
 #define MAX_CHILDREN 10 // Número máximo de hijos por nodo (ajustable)
 #define GO_BACK 27 // ESC  // Código ASCII para la tecla ESC (para volver al padre)
@@ -35,7 +36,7 @@ MenuNode* create_node(const char* title,char key,int id);
 MenuNode* menuInit();
 
 bool hasChildWithKey(MenuNode *node, char key);
-static void printMenuRecursive(MenuNode *node, int level);
+
 
 void menuUpdate(char caracter, MenuNode **current);
 char* get_title(MenuNode* menu);
