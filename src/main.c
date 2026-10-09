@@ -3,9 +3,6 @@
 /*----------------------------------------------------------
  * LED DE RUN
  *----------------------------------------------------------*/
-#include "freertos/timers.h"
-#include "driver/gpio.h"
-#define LED_PIN 2
 volatile uint32_t led_value = 0;
 static TimerHandle_t tmr_led;
 static void led_run_toggle(TimerHandle_t tmr_led)
@@ -42,11 +39,13 @@ void app_main(void)
     // creo timer periodico
     tmr_led = xTimerCreate(
         "TMR_LED",
-        pdMS_TO_TICKS(500),
+        pdMS_TO_TICKS(250),
         pdTRUE,
         NULL,
         led_run_toggle);
     // start timer
     xTimerStart(tmr_led, 0);
     /*----------------------------------------------------------*/
+    // LOOP DE EJECUCION
+    while(1);
 }

@@ -1,7 +1,7 @@
-#include "esp32s.h"
-#include "ui_port.h"
+#include "esp32s.h"     // UC
+#include "ui_port.h"    // PORTABLE
 // DRIVERS
-#include "driver/uart.h"
+#include <driver/uart.h>
 
 /**
  * CONTENIDO
@@ -12,26 +12,12 @@
  */
 
 #if UI_PORT == UI_PORT_ESP32S
-
+/*-------------------------------------------------------------*/
+/*-------------------------------------------------------------*/
 uart_config_t uart_config1;
 bool consolaIniciada=false;
 
 ui_status_t ui_port_init(void)
-{
-
-}
-
-size_t ui_port_write(const uint8_t *buf, size_t len)
-{
-
-}
-
-int ui_port_read_byte(void)
-{
-
-}
-
-esp_err_t initUart(void)
 {
     esp_err_t ret;
 
@@ -74,6 +60,32 @@ esp_err_t initUart(void)
     return ESP_OK;
 }
 
+size_t ui_port_write(const char *data, size_t len)
+{
+    int bytesWritten = 0;
+    // escritura de bytes de UART ESP32S
+    bytesWritten = uart_write_bytes(UART_DEBUG, data, len);
+    return (size_t)(bytesWritten);
+}
 
+char ui_port_read_byte(void)
+{
+    char ch;
 
+    int len = uart_read_bytes(UART_DEBUG, &ch, 1, 0);
+    if (len > 0) {
+        // Echo del carácter
+        uart_write_bytes(UART_DEBUG, (const char *)&ch, 1);
+
+        // Si la terminal envía \r, lo descartamos si viene seguido de \n,
+        // lo convierto a \n directamente.
+        if (ch == '\r') {
+            return '\n'; // Normaliza cualquier Enter (\r o \n) a '\n'
+        }
+        else return ch;
+    }
+    return '\0';
+}
+/*-------------------------------------------------------------*/
+/*-------------------------------------------------------------*/
 #endif // UI_PORT == UI_PORT_ESP32S

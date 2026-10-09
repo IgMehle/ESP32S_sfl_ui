@@ -124,7 +124,7 @@ static void onEnterNode(MenuNode* n)
     // Acciones inmediatas (sin pedir datos) y automaticas en elupdate
     switch (n->id) {
 
-        //case 21: print();       
+        //case 21: ui_print();       
         /*
         casexx:  // Acci贸n inmediata para el nodo con id xx
             break;

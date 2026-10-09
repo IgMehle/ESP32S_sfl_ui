@@ -19,16 +19,19 @@
 #include "uiConfig.h"
 #include "portable/ui_port.h"
 
-esp_err_t initUart(void);
-void sendUartDataln(const uint8_t* data, size_t len);
+// INIT
+int initUart(void);
+// WRITE
 void sendUartData(const uint8_t* data, size_t len);
-void writeSerialComln(const char* data);
+void sendUartDataln(const uint8_t* data, size_t len);
+void ui_print(const char* str);
+void ui_printFormat(const char* format, ...);
 void writeSerialCom(const char* data);
+void writeSerialComln(const char* data);
 void clearScreen(void);
-char readUserChar(void);
-void updateUartBuffers(void);
+//void updateUartBuffers(void);
 
-void print(const char* str);
-void printFormat(const char* format, ...);
+// READ
+char readUserChar(void);
 
 #endif // SERIAL_COM_H

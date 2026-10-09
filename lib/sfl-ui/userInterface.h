@@ -27,9 +27,6 @@
 // INCLUDES
 #include "menuTree.h"
 #include "serialCom.h"
-// FREERTOS
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 
 #define MAX_DATA_BUFFER 30
 
