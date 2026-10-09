@@ -15,4 +15,14 @@
 // SELECT THE PORT TO USE
 #include "portable/ui_portSelect.h"
 
+// UI STATUS
+typedef uint8_t ui_status_t;
+#define UI_OK   0
+#define UI_ERR  1
+
+// PROTOTIPOS
+ui_status_t ui_port_init(void);
+size_t      ui_port_write(const uint8_t *buf, size_t len);
+int         ui_port_read_byte(void);
+
 #endif // UI_PORT_H
