@@ -10,17 +10,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// CONFIGURACIONES Y PORTS
-/*
- * serialCom.h ─► uiConfig.h ─► portable/ui_port_list.h   (catálogo + UI_PORT)
- *       ─► portable/ui_port.h  (contrato + tipo de status)
- *      └─► portable/ui_port_select.h ─► port.h
-*/
+// CONFIG Y PORTABLE
 #include "uiConfig.h"
 #include "portable/ui_port.h"
 
 // INIT
 int initUart(void);
+
 // WRITE
 void sendUartData(const uint8_t* data, size_t len);
 void sendUartDataln(const uint8_t* data, size_t len);

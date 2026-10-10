@@ -19,10 +19,12 @@ static bool nodeRequiresInput(int id);
 bool userInterfaceInit(void)
 {
     initUart();
-    clearScreen(); //Borra mensajes del ESP32 al iniciar el programa
+    clearScreen(); // Borra mensajes del ESP32 al iniciar el programa
     menu = menuInit();
-    if (menu) ESP_LOGI("userInterface", "Menu inicializado");    
-    else ESP_LOGI("userInterface", "Menu no inicializado");
+    //if (menu) ESP_LOGI("userInterface", "Menu inicializado");    
+    //else ESP_LOGI("userInterface", "Menu no inicializado");
+    if (menu) ui_log(UI_LOG_INFO, "userInterface", "Menu inicializado");
+    else ui_log(UI_LOG_ERROR, "userInterface", "Menu no inicializado");
 
     return menu != NULL;
 }
@@ -32,7 +34,7 @@ void userInterfaceUpdate(void)
     if (menu == NULL) return;
 
     char charReceived = readUserChar();
-    if(charReceived== GO_BACK){ // ESCAPE
+    if(charReceived == GO_BACK){ // ESCAPE
         menuUpdate(charReceived, &menu);
         
         clearScreen();

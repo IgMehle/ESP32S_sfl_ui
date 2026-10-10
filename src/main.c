@@ -11,7 +11,8 @@ static void led_run_toggle(TimerHandle_t tmr_led)
     gpio_set_level(LED_PIN, led_value);
 }
 
-static void update_menu_task(void *pvParameters) {
+static void update_menu_task(void *pvParameters) 
+{
     while (1) {
         userInterfaceUpdate();
         vTaskDelay(pdMS_TO_TICKS(50)); // Ajusta el tiempo de espera según sea necesario
@@ -46,6 +47,4 @@ void app_main(void)
     // start timer
     xTimerStart(tmr_led, 0);
     /*----------------------------------------------------------*/
-    // LOOP DE EJECUCION
-    while(1);
 }
