@@ -23,7 +23,7 @@ static void update_menu_task(void *pvParameters)
 void app_main(void) 
 {
     userInterfaceInit();
-    xTaskCreate(update_menu_task, "updateMenuTask", 4096, NULL, 5, NULL);
+    xTaskCreate(update_menu_task, "updateMenuTask", 4096, NULL, 2, NULL);
 
     /*----------------------------------------------------------*/
     // led run xtimer

@@ -1,22 +1,78 @@
-ui_port.h es solo el contrato (prototipos); la implementación está en el archivo del port.
+MANEJO DEL ECHO
 
-QUE INCLUYE CADA HEADER DEL PORT
-serialCom.h ─► uiConfig.h ─► portable/ui_port_list.h   (catálogo + UI_PORT)
-            ─► portable/ui_port.h  (contrato + tipo de status)
-                    └─► portable/ui_port_select.h ─► esp32_uart.h
-uiConfig.h: incluye solo ui_port_list.h y define UI_PORT (con #ifndef, para pisarlo desde build_flags). Nunca incluye ui_port.h, para evitar ciclos.
-ui_port.h: incluye uiConfig.h, <stddef.h>, <stdint.h> y <stdbool.h>. Declara el tipo de status propio y las tres primitivas. Al final incluye ui_port_select.h.
-esp32_uart.h: solo macros y valores por defecto (puerto, baud, tamaños de buffer, UI_LOG). Conviene que no incluya driver/uart.h, para que el SDK no se filtre a todo el que incluya serialCom.h. Esos includes van en el .c.
-menuTree.h solo necesita uiConfig.h. userInterface.h incluye menuTree.h y serialCom.h.
+1. Contrato y configuración
 
-Al mover código, hay dos detalles de serialCom.c:
-writeSerialComln manda "\n\r", que es el orden inverso al estándar. Funciona en la mayoría de terminales, pero conviene "\r\n".
-print es un nombre global demasiado genérico. Hacelo static o ponele prefijo.
+c
+// ui_config.h
+#ifndef UI_ECHO_ENABLE
+#define UI_ECHO_ENABLE 1     // el core hace eco de lo que recibe
+#endif
 
-Sobre UI_PORT_WRITE_BLOCKS: el recorte que adjuntaste es ese flag, y lo reconsideré. 
-Es más simple y más portable fijarlo en el contrato: 
-ui_port_write no retorna hasta haber encolado los len bytes. 
-El port del ESP32 ya lo cumple, y el del LPC845 tendría que esperar 
-cuando el buffer está lleno en lugar de descartar. 
-Así el core no necesita flag ni lógica de reintento.
+// ui_port.h
+#define UI_NO_DATA  (-1)
 
+// Devuelve un byte (0..255) o UI_NO_DATA. No bloquea.
+// Es CRUDO: sin eco, sin traducir CR/LF, sin edición de línea.
+int ui_port_read_byte(void);
+
+El comentario sobre “crudo” es lo más importante: es la regla que tiene que cumplir cualquier port, incluido el del LPC845 cuando lo escribas.
+
+2. Port ESP32: solo transporte
+
+c
+// esp32s.c
+int ui_port_read_byte(void)
+{
+    uint8_t b;
+    if (uart_read_bytes(UART_DEBUG, &b, 1, 0) == 1) return b;
+    return UI_NO_DATA;
+}
+
+Con esto desaparecen del port el uart_write_bytes del eco y el if (ch == '\r').
+
+3. Core: la política del CLI
+
+c
+// serialCom.c
+char readUserChar(void)
+{
+    static bool last_was_cr = false;
+
+    int raw = ui_port_read_byte();
+    if (raw == UI_NO_DATA) return '\0';
+
+    char c = (char)raw;
+
+    // Terminales CRLF: el LF que sigue a un CR se descarta
+    if (c == '\n' && last_was_cr) {
+        last_was_cr = false;
+        return '\0';
+    }
+    last_was_cr = (c == '\r');
+    if (c == '\r') c = '\n';        // normalizo todo Enter a '\n'
+
+#if UI_ECHO_ENABLE
+    if (c == '\n') ui_port_write("\r\n", 2);
+    else           ui_port_write(&c, 1);
+#endif
+    return c;
+}
+
+Dos cosas para tener presentes:
+
+El eco del Enter es "\r\n", no '\n'. Si hacés eco de un \n solo, una terminal cruda baja de línea pero no vuelve al margen izquierdo. Antes no se notaba porque el eco mandaba el \r original y la pantalla se borraba enseguida.
+Corrijo un detalle de mi esquema anterior, donde tomaba la dirección de un int para escribirlo. Usá siempre un char (como arriba), porque con un int el resultado depende del endianness.
+
+Opcional: también se hace eco de ESC (27) y de otros caracteres de control, y algunas terminales los muestran como ^[. Si te molesta, filtrá con if ((unsigned char)c >= 32 || c == '\n'). Hoy se comporta igual que antes, así que lo dejaría para después.
+
+4. Limpieza y pruebas
+
+Borrá UI_PORT_ECHO_BY_PORT de esp32s.h (o del lugar donde esté, si ya lo movés).
+Como el core traduce UI_NO_DATA a '\0', userInterface.c no se toca.
+
+Qué probar, variando monitor_eol en platformio.ini (CR, LF y CRLF):
+
+Teclas del menú: se ven y navegan.
+Enter con cada EOL: una sola acción, sin doble ejecución.
+UI_ECHO_ENABLE 0: no se ve nada de lo que tipeás.
+Dejá monitor_echo apagado en el monitor de PlatformIO; si lo activás, vas a ver cada carácter duplicado cuando el eco del core también está encendido.

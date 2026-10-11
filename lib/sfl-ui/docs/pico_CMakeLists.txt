@@ -1,0 +1,16 @@
+# lib/sfl-ui/CMakeLists.txt
+add_library(sfl_ui STATIC
+    serialCom.c
+    menuTree.c
+    userInterface.c
+    portable/rp2350.c
+)
+
+# Los headers (ui_port.h, ui_config.h, etc.) están en la raíz de la librería
+target_include_directories(sfl_ui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Selecciona el port (pisa el default de ui_config.h)
+target_compile_definitions(sfl_ui PUBLIC UI_PORT=UI_PORT_RP2350)
+
+# Dependencias del SDK
+target_link_libraries(sfl_ui PUBLIC pico_stdlib hardware_uart)
